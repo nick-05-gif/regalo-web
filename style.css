@@ -1,0 +1,622 @@
+/* =============================================
+   VARIABLES GLOBALES / PALETA DE COLORES
+   Todo está centralizado aquí. Si quieres cambiar
+   un color, cámbialo una vez y se aplica en toda la web.
+============================================== */
+:root {
+  /* Nueva paleta: rosa suave y elegante, nada kitch */
+  --color-fondo:       #fdf0f4;   /* Rosa blanquecino, el fondo general */
+  --color-fondo-card:  #fff5f8;   /* Un poco más blanco para que las tarjetas resalten */
+  --color-borde:       #f0c8d8;   /* Borde rosa claro, muy sutil */
+  --color-acento:      #c9607a;   /* Rosa oscuro como color principal de acento */
+  --color-acento-soft: rgba(201, 96, 122, 0.10); /* Versión transparente del acento */
+  --color-rosa:        #e8829a;   /* Rosa medio para títulos secundarios */
+  --color-texto:       #3d2030;   /* Casi negro con tono morado/vino, más suave que negro puro */
+  --color-texto-dim:   #9d7080;   /* Texto secundario apagado */
+
+  /* Tipografía: Lora para el texto corrido (elegante y romántica), Playfair para títulos */
+  --font-cuerpo:   'Lora', serif;
+  --font-titulo:   'Playfair Display', serif;
+
+  /* Espaciados y tamaños */
+  --radio-card:    16px;
+  --sombra-card:   0 4px 32px rgba(201, 96, 122, 0.12);
+  --transicion:    0.3s ease;
+
+  /* Ancho máximo del contenido */
+  --ancho-max:     480px;
+}
+
+
+/* =============================================
+   RESET Y BASE
+   Limpiamos los estilos por defecto del navegador
+   y establecemos las bases que usaremos en todo.
+============================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth; /* Scroll suave cuando navegas a anclas (#id) */
+}
+
+body {
+  font-family: var(--font-cuerpo);
+  /* Fondo con degradado rosa muy suave de arriba a abajo */
+  background: linear-gradient(160deg, #fde8ef 0%, #fdf0f4 40%, #fce4f0 100%);
+  background-attachment: fixed;
+  color: var(--color-texto);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  min-height: 100dvh;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* Code inline - solo para los ejemplos de placeholder en el HTML */
+code {
+  font-size: 0.8em;
+  background: var(--color-acento-soft);
+  color: var(--color-acento);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+
+/* =============================================
+   SPLASH / PANTALLA DE ENTRADA
+   La primera cosa que ve cuando abre el QR.
+   Cubre toda la pantalla y tiene las estrellitas de fondo.
+============================================== */
+.splash {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  /* Overlay rosa oscuro para que el texto se lea bien encima de la foto */
+  background: linear-gradient(160deg, rgba(100, 20, 50, 0.75) 0%, rgba(60, 10, 30, 0.85) 100%);
+  transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+
+/* La imagen principal.jpg va aquí, cubriendo todo el splash por detrás */
+.splash__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: url('fotos/principal.jpg');
+  background-size: cover;
+  background-position: center top; /* top para que se vean las caras si la foto es vertical */
+  filter: brightness(0.55) saturate(0.8);
+}
+
+/* Cuando el JS le añade la clase .oculto, desaparece suavemente */
+.splash.oculto {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none; /* Ya no bloquea los clics por debajo */
+}
+
+.splash__content {
+  position: relative;
+  z-index: 2; /* Encima de las estrellitas */
+  text-align: center;
+  padding: 2rem;
+  max-width: var(--ancho-max);
+  animation: aparecerArriba 0.9s ease both;
+}
+
+.splash__eyebrow {
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #f9d0dc; /* Blanco rosado para que se lea sobre la foto oscura */
+  margin-bottom: 1.2rem;
+}
+
+.splash__title {
+  font-family: var(--font-titulo);
+  font-size: clamp(3rem, 15vw, 5.5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  color: #fff;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.4); /* Sombra para que resalte sobre la foto */
+}
+
+.splash__title em {
+  font-style: italic;
+  color: #f9aec0; /* Rosa clarito sobre foto oscura */
+}
+
+.splash__sub {
+  font-size: 1rem;
+  font-family: var(--font-titulo);
+  font-style: italic;
+  color: #f9d0dc;
+  margin-bottom: 2.5rem;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.3);
+}
+
+/* Las estrellitas */
+.stars-container {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+}
+
+/* Contenedor de corazones flotantes que sube desde abajo */
+.hearts-container {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Cada corazón individual (los genera el JS) */
+.heart {
+  position: absolute;
+  bottom: -20px;
+  font-size: 1.2rem;
+  opacity: 0;
+  animation: subirCorazon var(--dur, 6s) var(--delay, 0s) infinite ease-in;
+}
+
+@keyframes subirCorazon {
+  0%   { opacity: 0;   transform: translateY(0) scale(0.8); }
+  15%  { opacity: 0.7; }
+  85%  { opacity: 0.4; }
+  100% { opacity: 0;   transform: translateY(-110vh) scale(1.2) rotate(20deg); }
+}
+
+.star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: white;
+  opacity: 0;
+  animation: parpadear var(--dur, 3s) var(--delay, 0s) infinite ease-in-out;
+}
+
+@keyframes parpadear {
+  0%, 100% { opacity: 0; }
+  50% { opacity: var(--opacidad, 0.6); }
+}
+
+
+/* =============================================
+   BOTÓN PRINCIPAL
+   El que dice "Abrir tu sorpresa".
+   Puedes reutilizar la clase .btn-primary en otros botones.
+============================================== */
+.btn-primary {
+  display: inline-block;
+  background: #f9aec0; /* Rosa clarito que contraste bien sobre la foto oscura */
+  color: #3d1025;
+  border: none;
+  padding: 0.9rem 2.2rem;
+  border-radius: 60px;
+  font-family: var(--font-cuerpo);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+  transition: transform var(--transicion), box-shadow var(--transicion), background var(--transicion);
+  box-shadow: 0 0 28px rgba(249, 174, 192, 0.45);
+}
+
+.btn-primary:hover,
+.btn-primary:focus-visible {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 0 44px rgba(249, 174, 192, 0.65);
+  background: #fcc5d3;
+  outline: none;
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+
+/* =============================================
+   CONTENIDO PRINCIPAL
+   El .main empieza oculto y aparece cuando
+   el JS le quita el aria-hidden y la clase.
+============================================== */
+.main {
+  max-width: var(--ancho-max);
+  margin: 0 auto;
+  padding: 0 1.25rem 4rem;
+  opacity: 0;
+  transition: opacity 1s ease 0.3s; /* El 0.3s es un pequeño retraso para que la transición quede bien */
+}
+
+/* Cuando el JS le añade esta clase, aparece */
+.main.visible {
+  opacity: 1;
+}
+
+
+/* =============================================
+   HERO / CABECERA PRINCIPAL
+   Lo primero que ves después del splash.
+============================================== */
+.hero {
+  text-align: center;
+  padding: 4rem 0 3rem;
+}
+
+.hero__badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--color-acento);
+  border: 1px solid var(--color-acento);
+  padding: 0.35rem 1rem;
+  border-radius: 40px;
+  margin-bottom: 1.5rem;
+  animation: aparecerArriba 0.7s ease both;
+}
+
+.hero__title {
+  font-family: var(--font-titulo);
+  font-size: clamp(2.2rem, 10vw, 3.5rem);
+  font-weight: 400;
+  line-height: 1.2;
+  color: var(--color-texto);
+  margin-bottom: 1rem;
+  animation: aparecerArriba 0.8s ease 0.1s both;
+}
+
+.hero__date {
+  font-size: 0.85rem;
+  color: var(--color-acento);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  animation: aparecerArriba 0.8s ease 0.2s both;
+}
+
+/* Animación reutilizable: aparece desde abajo */
+@keyframes aparecerArriba {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* =============================================
+   SECCIÓN: CARTA
+   Una tarjeta central con el mensaje personal.
+============================================== */
+.card-section {
+  margin-bottom: 3rem;
+}
+
+.card {
+  background: var(--color-fondo-card);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-card);
+  padding: 2rem 1.75rem;
+  box-shadow: var(--sombra-card);
+}
+
+.card__icono {
+  display: block;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.card__titulo {
+  font-family: var(--font-titulo);
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: var(--color-acento);
+  margin-bottom: 1.2rem;
+}
+
+.card__texto p {
+  color: var(--color-texto-dim);
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+  font-weight: 300;
+}
+
+.card__texto p:last-child {
+  margin-bottom: 0;
+}
+
+.carta {
+  border-left: 3px solid var(--color-acento);
+  position: relative;
+}
+
+
+/* =============================================
+   SECCIÓN: RAZONES / LISTA
+   Lista numerada con estilo propio, no usa <ol> por defecto.
+============================================== */
+.razones-section {
+  margin-bottom: 3rem;
+}
+
+/* Títulos de sección genéricos - lo usamos en varias partes */
+.section-titulo {
+  font-family: var(--font-titulo);
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: var(--color-texto);
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.section-sub {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--color-texto-dim);
+  margin-bottom: 2rem;
+}
+
+.lista-razones {
+  list-style: none; /* Quitamos los números por defecto para poner los nuestros */
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.razon-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.2rem;
+  background: var(--color-fondo-card);
+  border: 1px solid var(--color-borde);
+  border-radius: 12px;
+  padding: 1.1rem 1.25rem;
+  transition: border-color var(--transicion), transform var(--transicion), box-shadow var(--transicion);
+}
+
+.razon-item:hover {
+  border-color: var(--color-acento);
+  transform: translateX(4px);
+  box-shadow: 0 2px 16px rgba(201, 96, 122, 0.12);
+}
+
+.razon-num {
+  font-family: var(--font-titulo);
+  font-size: 1.4rem;
+  font-style: italic;
+  color: var(--color-acento);
+  line-height: 1;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.razon-texto {
+  font-size: 0.95rem;
+  color: var(--color-texto);
+  font-weight: 400; /* Más fácil de leer en fondo claro */
+}
+
+
+
+
+/* =============================================
+   FOTOS INLINE (para móvil)
+   Se intercalan entre el contenido en pantallas pequeñas.
+   En desktop se ocultan porque allí las fotos van a los lados.
+============================================== */
+
+/* Por defecto visibles en flujo normal (móvil-first) */
+.foto-inline {
+  display: block;
+  margin: 1.25rem auto;
+  width: 78%;          /* Un poco menos que antes para que respire con los bordes */
+  max-width: 260px;    /* Máximo razonable en móvil, sin ocupar toda la pantalla */
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 18px rgba(201, 96, 122, 0.22);
+  border: 4px solid #fff;
+}
+
+.foto-inline img {
+  width: 100%;
+  height: auto;            /* Respeta la proporción original de cada foto */
+  display: block;
+}
+
+/* En desktop a partir de 740px las ocultamos:
+   allí ya se ven las fotos laterales absolutas */
+@media (min-width: 740px) {
+  .foto-inline {
+    display: none;
+  }
+}
+
+
+/* =============================================
+   FOTOS LATERALES
+   En móvil se ocultan (no hay espacio y taparían texto).
+   En desktop (≥740px) aparecen en los márgenes exteriores
+   de la columna, sin rozar jamás la carta ni las razones.
+============================================== */
+
+/* El wrapper que agrupa contenido + fotos de ambos lados */
+.bloque-con-fotos {
+  position: relative;
+  margin-bottom: 0.5rem;
+}
+
+/* Por defecto las fotos están ocultas - móvil primero */
+.foto-lateral {
+  display: none;
+}
+
+/* A partir de 740px ya hay margen real a los lados de la columna de 480px.
+   (740 - 480) / 2 = 130px por lado, suficiente para una foto de 105px. */
+@media (min-width: 740px) {
+
+  .foto-lateral {
+    display: block;
+    position: absolute;
+    width: 105px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 6px 22px rgba(201, 96, 122, 0.28);
+    border: 3px solid #fff;  /* Borde tipo Polaroid */
+    z-index: 0;              /* Detrás del contenido: nunca encima del texto */
+    pointer-events: none;
+    top: 1.5rem;
+  }
+
+  .foto-lateral img {
+    width: 100%;
+    aspect-ratio: 3/4;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Izquierda: -125px del borde del bloque → cae en el margen exterior */
+  .foto-lateral--izq {
+    left: -125px;
+    transform: rotate(-6deg);
+  }
+
+  /* Derecha: simétrico */
+  .foto-lateral--der {
+    right: -125px;
+    transform: rotate(5deg);
+  }
+
+  /* Pequeñas variantes de altura para que no queden al mismo nivel */
+  .foto-lateral--baja { top: 3rem; }
+  .foto-lateral--alta { top: 0.5rem; }
+
+}
+
+
+/* =============================================
+   CORAZONES FLOTANTES DE PÁGINA
+   Position fixed para que suban por los bordes
+   izquierdo y derecho mientras scrolleas.
+   El JS los genera (función crearCorazonesPage).
+============================================== */
+.page-hearts {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+/* Cuando el JS le añade esta clase, los corazones aparecen */
+.page-hearts.visible {
+  opacity: 1;
+}
+
+/* Cada corazón de página, mismo sistema que los del splash */
+.heart-page {
+  position: absolute;
+  bottom: -30px;
+  opacity: 0;
+  animation: subirCorazonPage var(--dur, 8s) var(--delay, 0s) infinite ease-in;
+}
+
+/* Los pone en el borde izq (0-12% del ancho) y borde der (88-100%) */
+@keyframes subirCorazonPage {
+  0%   { opacity: 0;   transform: translateY(0) scale(0.9) rotate(0deg); }
+  10%  { opacity: 0.5; }
+  90%  { opacity: 0.25; }
+  100% { opacity: 0;   transform: translateY(-105vh) scale(1.1) rotate(15deg); }
+}
+
+
+
+
+/* =============================================
+   FOOTER / CIERRE
+   El remate final, con la firma y una fecha.
+============================================== */
+.footer {
+  text-align: center;
+  padding: 3rem 0 2rem;
+  border-top: 1px solid var(--color-borde);
+  margin-top: 2rem;
+}
+
+.footer__corazon {
+  font-size: 2.5rem;
+  color: var(--color-acento);
+  display: block;
+  margin-bottom: 1.5rem;
+  animation: latido 1.5s ease-in-out infinite;
+}
+
+@keyframes latido {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.18); }
+}
+
+.footer__frase {
+  font-family: var(--font-titulo);
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--color-acento);
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.footer__firma {
+  font-size: 0.9rem;
+  color: var(--color-texto-dim);
+  margin-bottom: 0.5rem;
+}
+
+.footer__firma strong {
+  color: var(--color-acento);
+  font-weight: 600;
+}
+
+.footer__fecha {
+  font-size: 0.75rem;
+  color: var(--color-texto-dim);
+  letter-spacing: 0.15em;
+}
+
+
+/* =============================================
+   RESPONSIVE - PANTALLAS GRANDES
+   En móvil ya queda bien por defecto (mobile-first).
+   Esto solo ajusta cosas para tablets/desktop,
+   aunque lo más probable es que la vean en móvil.
+============================================== */
+@media (min-width: 600px) {
+  :root {
+    --ancho-max: 520px; /* Un poco más de anchura si hay sitio */
+  }
+
+  .card {
+    padding: 2.5rem 2.25rem;
+  }
+
+  .galeria-grid {
+    grid-template-columns: repeat(2, 1fr); /* Se podría hacer 3 col pero 2 queda mejor aquí */
+  }
+}

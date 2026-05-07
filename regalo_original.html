@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <!-- Esto es fundamental para que el móvil no haga zoom raro y se vea bien desde el QR -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Un pequeño regalito digital para un día especial 🤍" />
+  <title>5 Meses Contigo 🌙</title>
+
+  <!-- Tipografía: Playfair Display para títulos, Lora para el cuerpo de texto -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- =============================================
+       PANTALLA DE ENTRADA / SPLASH SCREEN
+       Aparece primero, con un botón para "abrir" la sorpresa.
+       Si quieres quitarla y que vaya directo al contenido,
+       borra esta sección y descomenta la línea del body en el CSS.
+  ============================================== -->
+  <div id="splash" class="splash">
+    <div class="splash__content">
+      <p class="splash__eyebrow">Para ti, que lo eres todo</p>
+      <h1 class="splash__title">Felices<br /><em>5 meses</em></h1>
+      <p class="splash__sub">mi amor, mi vida, mi todo</p>
+      <button id="btn-abrir" class="btn-primary">Abrir tu sorpresa 🤍</button>
+    </div>
+    <!-- Imagen de fondo del splash: pon tu foto en fotos/principal.jpg -->
+    <div class="splash__bg" aria-hidden="true"></div>
+    <!-- Estrellitas generadas por JS -->
+    <div id="stars-container" class="stars-container" aria-hidden="true"></div>
+    <!-- Corazones flotantes generados por JS -->
+    <div id="hearts-container" class="hearts-container" aria-hidden="true"></div>
+  </div>
+
+
+  <!-- =============================================
+       CONTENIDO PRINCIPAL (empieza oculto)
+       Aparece cuando el usuario pulsa el botón de arriba.
+       Todo lo que quieras mostrar va aquí dentro.
+  ============================================== -->
+  <!-- Corazones flotantes que se ven mientras scrolleas el contenido.
+       El JS los crea cuando se abre la página (están en script.js). -->
+  <div id="page-hearts" class="page-hearts" aria-hidden="true"></div>
+
+  <main id="main-content" class="main" aria-hidden="true">
+
+    <!-- CABECERA con fecha y pequeño icono -->
+    <header class="hero">
+      <div class="hero__badge">✦ 5 meses ✦</div>
+      <h2 class="hero__title">
+        <!-- Cambia esto por algo que le hayas dicho de verdad -->
+        Desde aquel día<br />que cambió todo
+      </h2>
+      <p class="hero__date">9/11/2025 → 9/4/2026</p>
+    </header>
+
+
+    <!-- SECCIÓN: CARTA / MENSAJE PRINCIPAL -->
+    <!-- Las fotos de los lados van fuera de la carta, pegadas al borde -->
+    <div class="bloque-con-fotos">
+      <!-- Foto izquierda: pega de fotos/1.jpg. Gira un poco para que quede natural -->
+      <figure class="foto-lateral foto-lateral--izq">
+        <img src="fotos/1.jpg" alt="" loading="lazy" />
+      </figure>
+
+      <section class="card-section" id="seccion-carta">
+        <div class="card carta">
+          <span class="card__icono">💌</span>
+          <h3 class="card__titulo">Una pequeña carta</h3>
+
+          <!-- Foto 1 (solo móvil): nada más abrir la carta -->
+          <figure class="foto-inline">
+            <img src="fotos/1.jpg" alt="" loading="lazy" />
+          </figure>
+
+          <div class="card__texto">
+            <p>
+              Feliz 5 meses juntos mi vida, Aún no comprendo cómo se me pueden pasar los días tan rápido,
+              pero supongo que es verdad eso que dicen: cuando eres feliz, el tiempo vuela. Y ahí es donde
+              tengo que darte las gracias, porque eres mi fuente de felicidad y cariño que hace que mis
+              días sean maravillosos.
+            </p>
+
+            <p>
+              Hace unos días me puse a mirar la galería y me encanta ver que está plagada de fotos
+              nuestras super felices. Es por eso he decidido poner unas pocas por aquí.
+            </p>
+
+            <!-- Foto 2 (solo móvil): a mitad de la carta -->
+            <figure class="foto-inline">
+              <img src="fotos/2.jpg" alt="" loading="lazy" />
+            </figure>
+
+            <p>
+              Se nota muchísimo que somos la mejor pareja que puede existir y lo mucho que nos amamos.
+              Me encanta amarte, pero sobre todo, me encanta sentirme tan amado por alguien tan especial
+              como tú. Eres única e inigualable, de verdad.
+            </p>
+
+            <p>
+              Me siento el chico más afortunado del mundo por tener a una pedazo de mujer como tú a mí
+              lado. Lo tienes absolutamente todo, no te falta nada. Me encantas desde lo físico hasta lo
+              mental. Desde lo preciosa y hermosa que eres hasta lo cariñosa y atenta que eres siempre
+              conmigo.
+            </p>
+
+            <!-- Foto 3 (solo móvil): antes del cierre de la carta -->
+            <figure class="foto-inline">
+              <img src="fotos/3.jpg" alt="" loading="lazy" />
+            </figure>
+
+            <p>
+              Quiero que nunca te olvides de que te amo muchísimo y que siempre me tendrás a tu lado
+              pase lo que pase.
+            </p>
+
+            <p>
+              Por muchos meses (y en el futuro años) juntitosss❤️
+            </p>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Foto derecha, alineada con el final de la carta -->
+      <figure class="foto-lateral foto-lateral--der">
+        <img src="fotos/2.jpg" alt="" loading="lazy" />
+      </figure>
+    </div>
+
+
+    <!-- SECCIÓN: RAZONES -->
+    <!-- Mismo sistema: fotos a los lados, la lista en el centro -->
+    <div class="bloque-con-fotos">
+      <!-- Foto izquierda de las razones -->
+      <figure class="foto-lateral foto-lateral--izq foto-lateral--baja">
+        <img src="fotos/3.jpg" alt="" loading="lazy" />
+      </figure>
+
+      <section class="razones-section" id="seccion-razones">
+        <h3 class="section-titulo">Por qué eres mi todo</h3>
+
+        <!-- Foto 4 visible en móvil, justo debajo del título de razones -->
+        <figure class="foto-inline">
+          <img src="fotos/4.jpg" alt="" loading="lazy" />
+        </figure>
+
+        <ol class="lista-razones">
+          <li class="razon-item">
+            <span class="razon-num">01</span>
+            <span class="razon-texto">Porque cada minuto contigo merece más la pena que horas con cualquier otra cosa</span>
+          </li>
+          <li class="razon-item">
+            <span class="razon-num">02</span>
+            <span class="razon-texto">Porque eres la chica más preciosa del universo</span>
+          </li>
+          <li class="razon-item">
+            <span class="razon-num">03</span>
+            <span class="razon-texto">Porque me quieres tal y como soy y me lo demuestras cada día</span>
+          </li>
+          <li class="razon-item">
+            <span class="razon-num">04</span>
+            <span class="razon-texto">Porque eres la mujer de mi vida, el amor de mi vida y mi alma gemela</span>
+          </li>
+        </ol>
+
+        <!-- Foto 5 al final de las razones -->
+        <figure class="foto-inline">
+          <img src="fotos/5.jpg" alt="" loading="lazy" />
+        </figure>
+
+      </section>
+
+      <!-- Foto derecha de las razones -->
+      <figure class="foto-lateral foto-lateral--der foto-lateral--alta">
+        <img src="fotos/4.jpg" alt="" loading="lazy" />
+      </figure>
+    </div>
+
+
+    <!-- SECCIÓN: CIERRE / FIRMA -->
+    <footer class="footer" id="seccion-cierre">
+      <div class="footer__corazon" aria-hidden="true">♡</div>
+      <p class="footer__frase">Por muchos más meses y años juntos ♡</p>
+      <p class="footer__firma">
+        Con todo mi amor, <strong>Tu bomboncito de fresa</strong>
+      </p>
+      <p class="footer__fecha">09 · 04 · 2026</p>
+    </footer>
+
+  </main>
+
+
+  <!-- El script va al final para que el HTML cargue antes que el JS -->
+  <script src="script.js"></script>
+
+</body>
+</html>
