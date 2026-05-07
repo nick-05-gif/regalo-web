@@ -2120,6 +2120,9 @@ input,textarea{font-family:var(--font-body)}
     <li><a href="#" onclick="goTo('inicio');return false" data-section="inicio">
       <span class="nav-icon">🏠</span> Inicio
     </a></li>
+    <li><a href="#" onclick="goTo('regalo');return false" data-section="regalo">
+      <span class="nav-icon">💝</span> Regalo bombón
+    </a></li>
     <li><a href="#" onclick="goTo('web');return false" data-section="web">
       <span class="nav-icon">🌙</span> Inicio Web
     </a></li>
@@ -2150,6 +2153,9 @@ input,textarea{font-family:var(--font-body)}
   <a href="#" onclick="goTo('inicio');return false" data-section="inicio">
     <span class="nav-icon">🏠</span> Inicio
   </a>
+  <a href="#" onclick="goTo('regalo');return false" data-section="regalo">
+    <span class="nav-icon">💝</span> Regalo bombón
+  </a>
   <a href="#" onclick="goTo('web');return false" data-section="web">
     <span class="nav-icon">🌙</span> Inicio Web — La sorpresa
   </a>
@@ -2177,6 +2183,72 @@ input,textarea{font-family:var(--font-body)}
 
   <!-- ===== INICIO ===== -->
   <section class="section active" id="sec-inicio">
+    <div class="splash-hero">
+      <div class="badge">✦ desde el 9 · 11 · 2025 ✦</div>
+      <p class="splash-hero__big">Tú y Yo</p>
+      <p class="splash-hero__subtitle">nuestro pequeño universo</p>
+
+      <!-- Frase romántica rotativa -->
+      <!-- IDs únicos para que esta copia funcione en paralelo con el inicio -->
+      <p class="frase-rotativa" id="frase-rotativa-regalo">cargando...</p>
+
+      <div class="counter-row">
+        <div class="counter-box">
+          <span class="counter-box__num" id="cnt-dias-regalo">—</span>
+          <span class="counter-box__label">días</span>
+        </div>
+        <div class="counter-box">
+          <span class="counter-box__num" id="cnt-meses-regalo">—</span>
+          <span class="counter-box__label">meses</span>
+        </div>
+        <div class="counter-box">
+          <span class="counter-box__num" id="cnt-horas-regalo">—</span>
+          <span class="counter-box__label">horas</span>
+        </div>
+      </div>
+
+      <!-- Foto polaroid central -->
+      <div class="inicio-polaroid">
+        <img src="fotos/fin_carrera.jpg" alt="Nosotros" loading="lazy"/>
+        <p class="inicio-polaroid__caption">nosotros ♡</p>
+      </div>
+    </div>
+
+    <!-- Timeline horizontal de hitos -->
+    <div class="inicio-timeline">
+      <div class="inicio-timeline__track">
+        <div class="hito">
+          <div class="hito__dot">🥂</div>
+          <div class="hito__fecha">09 · 11 · 2025</div>
+          <div class="hito__label">El primer día</div>
+        </div>
+        <div class="hito">
+          <div class="hito__dot">🎄</div>
+          <div class="hito__fecha">Dic 2025</div>
+          <div class="hito__label">Primera Navidad</div>
+        </div>
+        <div class="hito">
+          <div class="hito__dot">❤️</div>
+          <div class="hito__fecha">Feb 2026</div>
+          <div class="hito__label">Primer San Valentín</div>
+        </div>
+        <div class="hito">
+          <div class="hito__dot">🌸</div>
+          <div class="hito__fecha">09 · 05 · 2026</div>
+          <div class="hito__label">6 meses ♡</div>
+        </div>
+        <div class="hito">
+          <div class="hito__dot">✨</div>
+          <div class="hito__fecha">y contando...</div>
+          <div class="hito__label">Lo que queda</div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ===== REGALO ===== -->
+  <section class="section" id="sec-regalo">
     <div class="splash-hero">
       <div class="badge">✦ desde el 9 · 11 · 2025 ✦</div>
       <p class="splash-hero__big">Tú y Yo</p>
@@ -2819,6 +2891,7 @@ function spawnHearts(){
 // ============================================================
 //  COUNTER (inicio)
 // ============================================================
+// Mantengo sincronizados los dos bloques: inicio y regalo.
 function updateCounter(){
   const start=new Date('2025-11-09T00:00:00');
   const now=new Date();
@@ -2826,9 +2899,9 @@ function updateCounter(){
   const diffDias=Math.floor(diffMs/(1000*60*60*24));
   const diffMeses=Math.floor(diffDias/30.44);
   const diffHoras=Math.floor(diffMs/(1000*60*60));
-  animCount('cnt-dias', diffDias);
-  animCount('cnt-meses', diffMeses);
-  animCount('cnt-horas', diffHoras);
+  ['cnt-dias','cnt-dias-regalo'].forEach(id=>animCount(id, diffDias));
+  ['cnt-meses','cnt-meses-regalo'].forEach(id=>animCount(id, diffMeses));
+  ['cnt-horas','cnt-horas-regalo'].forEach(id=>animCount(id, diffHoras));
 }
 function animCount(id, target){
   const el=document.getElementById(id);
@@ -4313,15 +4386,21 @@ const FRASES = [
 let fraseIdx = Math.floor(Math.random() * FRASES.length);
 
 function iniciarFrasesRotativas() {
-  const el = document.getElementById('frase-rotativa');
-  if (!el) return;
-  el.textContent = FRASES[fraseIdx];
+  // Las dos frases rotativas comparten el mismo texto y el mismo ritmo.
+  const elementos = [
+    document.getElementById('frase-rotativa'),
+    document.getElementById('frase-rotativa-regalo')
+  ].filter(Boolean);
+  if (!elementos.length) return;
+  elementos.forEach(el => { el.textContent = FRASES[fraseIdx]; });
   setInterval(() => {
-    el.classList.add('fade');
+    elementos.forEach(el => el.classList.add('fade'));
     setTimeout(() => {
       fraseIdx = (fraseIdx + 1) % FRASES.length;
-      el.textContent = FRASES[fraseIdx];
-      el.classList.remove('fade');
+      elementos.forEach(el => {
+        el.textContent = FRASES[fraseIdx];
+        el.classList.remove('fade');
+      });
     }, 600);
   }, 4000);
 }
